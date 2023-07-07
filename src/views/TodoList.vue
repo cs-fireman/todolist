@@ -16,27 +16,28 @@
           </div>
         </div>
       </div>
-      <hr class="todo-hr">
+      <hr class="todo-hr" />
 
-      <div v-for="(div, index) in newDivs" :key="index">
+      <div v-for="(item, index) in newDivs" :key="index">
         <div class="todoList">
-          <div class="circle" :class="{ filled: div.isFilled }" @click="toggleCircle(index)"></div>
-          <textarea name="text" id="text" placeholder="请输入TODO事件" cols="30" rows="1" class="text"></textarea>
-          <div class="time">{{ currentTime }}</div>
-          <div class="btn4" @click="dTodo(index)">删除</div>
+          <div class="circle" :class="{ filled: item.isFilled }" @click="toggleCircle(index)"></div>
+          <textarea name="text" id="text" placeholder="请输入TODO事件" cols="30" rows="1" v-model="item.value"
+            class="text"></textarea>
+          <div class="time">{{ item.time }}</div>
+          <div class="btn4" @click.stop="dTodo(index)">删除</div>
         </div>
       </div>
     </div>
   </ContentBase>
 </template>
-  
+
 <script>
 import ContentBase from '../components/ContentBase';
 
 export default {
   name: 'TodoList',
   components: {
-    ContentBase
+    ContentBase,
   },
 
   data() {
@@ -46,14 +47,16 @@ export default {
       currentTime: '', // 当前时间
     };
   },
-  mounted() {
-    this.updateTime(); // 初始化时间
-    // setInterval(this.updateTime, 1000); // 每秒钟更新时间
-  },
   methods: {
     // imitation
     plus() {
-      this.newDivs.push({});
+      this.updateTime();
+      this.newDivs.push({
+        id: this.newDivs.length,
+        isFilled: false,
+        value: '',
+        time: this.currentTime,
+      });
     },
     toggleCircle(index) {
       this.newDivs[index].isFilled = !this.newDivs[index].isFilled; // 切换圆圈状态
@@ -68,8 +71,14 @@ export default {
         this.newDivs[i].isFilled = false; // 更新每个圆圈的状态
       }
     },
-    dTodo(key) {
-      this.newDivs.splice(key, 1);
+    dTodo(index) {
+      // console.log(id);
+      // console.log(this.newDivs);
+      this.newDivs.splice(index, 1);
+      // const index = this.newDivs.findIndex((item) => item.id === id);
+      // if (index !== -1) {
+      //   this.newDivs.splice(index, 1);
+      // }
     },
     updateTime() {
       const now = new Date();
@@ -81,9 +90,8 @@ export default {
 
       this.currentTime = `${year}-${month}-${date} ${hours}:${minutes}`; // 更新当前时间
     },
-  }
-
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -112,7 +120,7 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #938EF5;
+  background-color: #938ef5;
   color: white;
   line-height: 40px;
   font-size: 30px;
@@ -149,7 +157,6 @@ export default {
   padding: 5px, 15px;
   float: right;
   cursor: pointer;
-
 }
 
 .btn2 {
@@ -159,7 +166,6 @@ export default {
   margin: 0, 5px;
   padding: 5px, 15px;
   cursor: pointer;
-
 }
 
 .btn3 {
@@ -169,7 +175,6 @@ export default {
   margin: 0, 5px;
   padding: 5px, 15px;
   cursor: pointer;
-
 }
 
 .todo-hr {
@@ -183,7 +188,7 @@ export default {
 .todoList {
   width: 100%;
   height: 60px;
-  background-color: #4A4A5F;
+  background-color: #4a4a5f;
   border-radius: 5px;
   box-shadow: 2px 2px 5px black;
   color: white;
@@ -207,7 +212,7 @@ export default {
 }
 
 .text {
-  background-color: #4A4A5F;
+  background-color: #4a4a5f;
   border-bottom: 1px solid white;
   border-top: none;
   border-left: none;
@@ -237,7 +242,5 @@ export default {
   font-size: 12px;
   float: left;
   cursor: pointer;
-
 }
 </style>
-  
